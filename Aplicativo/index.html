@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8" />
+	<meta name="viewport" content="width=device-width, user-scalable=no
+		initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0" />
+
+	<title>TCC APP</title>
+
+	<style>
+		@import 'ui/css/evothings-app.css';
+	</style>
+
+	<script>
+	// Redirect console.log to Evothings Workbench.
+	if (window.hyper && window.hyper.log) { console.log = hyper.log }
+	</script>
+
+	<script src="cordova.js"></script>
+	<script src="libs/mqttws31.js"></script>
+	<script src="app.js"></script>
+	<script src="libs/CryptoJS/components/core-min.js"></script>
+	<script src="libs/CryptoJS/components/core-min.js"></script>
+	<script src="libs/CryptoJS/rollups/aes.js"></script>
+	<script src="libs/CryptoJS/rollups/pbkdf2.js"></script>
+	
+</head>
+
+<body ontouchstart=""><!-- ontouchstart="" enables low-delay CSS transitions. -->
+
+	<header>
+		<button class="back" onclick="history.back()">
+			<img src="ui/images/arrow-left.svg" />
+		</button>
+
+		<img class="logotype" src="ui/images/Mack.svg" alt="Mackenzie" />
+		
+	</header>
+
+	<table id="statusBar">
+		<tr>
+		  <td><p id="gps">GPS:</p></td>
+		  <td><p id="fixIndicator" class="noFix" ></p></td>
+		  <td><p id="lastSeen">Atualizado:</p></td>
+		  <td><p id="timeStamp">nunca</p></td>
+		</tr>
+	</table>
+
+
+	<div id="map"></div>
+
+	<button id="connect" onclick="app.setupConnection()" class="green wide">CONECTAR</button>	
+
+	<script async defer src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBMFRbAKD9H9REjV6GZ1Cq3WkxrXjkCOf0&callback=initMap"></script>	
+</body>
+</html>
+
+</head>
+
+

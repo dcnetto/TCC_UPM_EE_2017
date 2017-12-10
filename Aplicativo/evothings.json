@@ -1,0 +1,14 @@
+{
+  "uuid": "f5a22468-0992-47b3-b7c8-7b75ce7349cf",
+  "plugins": [],
+  "libraries": [],
+  "name": "owntrack-app",
+  "title": "OwnTrack App",
+  "description": "Companion app for OwnTrack service.",
+  "long-description": "Companion app for OwnTrack service.",
+  "version": "0.1.0",
+  "author-name": "Daniel Netto",
+  "author-email": "suporte@owntrack.com.br",
+  "author-url": "https://owntrack.com.br",
+  "cordova-id": "com.evothings.samples.owntrack.app"
+}

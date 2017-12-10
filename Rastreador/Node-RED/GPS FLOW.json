@@ -1,0 +1,136 @@
+[
+    {
+        "id": "7709a213.3ceefc",
+        "type": "tab",
+        "label": "GPS v3",
+        "disabled": false,
+        "info": ""
+    },
+    {
+        "id": "53265cda.947204",
+        "type": "gpsd",
+        "z": "7709a213.3ceefc",
+        "name": "GPS Data - Acquisition",
+        "hostname": "localhost",
+        "port": "2947",
+        "tpv": true,
+        "sky": false,
+        "info": false,
+        "device": false,
+        "gst": false,
+        "att": false,
+        "x": 160,
+        "y": 60,
+        "wires": [
+            [
+                "d53694de.85f62",
+                "ec531d12.0e8ca"
+            ]
+        ]
+    },
+    {
+        "id": "d53694de.85f62",
+        "type": "delay",
+        "z": "7709a213.3ceefc",
+        "name": "GPS Data -  Throttle",
+        "pauseType": "rate",
+        "timeout": "5",
+        "timeoutUnits": "seconds",
+        "rate": "1",
+        "nbRateUnits": "5",
+        "rateUnits": "second",
+        "randomFirst": "1",
+        "randomLast": "5",
+        "randomUnits": "seconds",
+        "drop": true,
+        "x": 160,
+        "y": 140,
+        "wires": [
+            [
+                "8a796b3a.34403"
+            ]
+        ]
+    },
+    {
+        "id": "58ae4443.64a934",
+        "type": "function",
+        "z": "7709a213.3ceefc",
+        "name": "GPS Data - Encrypt",
+        "func": "var CryptoJS = context.global.cryptojs;\n\nvar keySize = 256;\nvar ivSize = 128;\nvar iterations = 1000;\nvar password = \"P@ssw0rd\";\n\nvar salt = CryptoJS.lib.WordArray.random(128/8);\nvar key = CryptoJS.PBKDF2(password, salt, { keySize: keySize/32, iterations: iterations });\nvar iv = CryptoJS.lib.WordArray.random(128/8);    \n\nvar encrypted = CryptoJS.AES.encrypt(JSON.stringify(msg.payload), key, { iv: iv });\n    \nvar encryptedMsg = { payload: salt.toString()+ iv.toString() + encrypted.toString() }\n    \nreturn encryptedMsg;",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 160,
+        "y": 300,
+        "wires": [
+            [
+                "7c0e8c98.49432c",
+                "4fc3bc9d.2e855c"
+            ]
+        ]
+    },
+    {
+        "id": "4fc3bc9d.2e855c",
+        "type": "debug",
+        "z": "7709a213.3ceefc",
+        "name": "Parsed - Encrypted",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 430,
+        "y": 300,
+        "wires": []
+    },
+    {
+        "id": "94d3e4a2.0b0bb8",
+        "type": "debug",
+        "z": "7709a213.3ceefc",
+        "name": "Parsed - Plain",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 420,
+        "y": 220,
+        "wires": []
+    },
+    {
+        "id": "8a796b3a.34403",
+        "type": "function",
+        "z": "7709a213.3ceefc",
+        "name": "GPS Data - Parse",
+        "func": "if (msg.payload.class == \"TPV\" && msg.payload.lat !== undefined && msg.payload.lon !== undefined){\n    var location = { lat: msg.payload.lat, lng: msg.payload.lon, mode: msg.payload.mode };\n    var parsedMsg = { payload: location };\n    \n    return parsedMsg;\n    \n}else if (msg.payload.class == \"TPV\"){ \n    var location = { mode: msg.payload.mode }; \n    var parsedMsg = { payload: location };\n\n    return parsedMsg;\n}",
+        "outputs": "1",
+        "noerr": 0,
+        "x": 150,
+        "y": 220,
+        "wires": [
+            [
+                "58ae4443.64a934",
+                "94d3e4a2.0b0bb8"
+            ]
+        ]
+    },
+    {
+        "id": "7c0e8c98.49432c",
+        "type": "function",
+        "z": "7709a213.3ceefc",
+        "name": "GPS Data - Send (JS)",
+        "func": "var MQTT = context.global.mqtt;\n\nTOPIC = 'car/location';\nMESSAGE = msg.payload;\nUSER = 'web';\nPWD = '123456';\nSRV = 'wss://hub.owntrack.com.br/mqtt';\n\nvar client = MQTT.connect(SRV,{ username: USER, password: PWD });\n\nclient.on('connect', function () {\n  client.publish(TOPIC, MESSAGE);\n  client.end()\n})\n\nreturn msg;\n",
+        "outputs": "0",
+        "noerr": 0,
+        "x": 160,
+        "y": 380,
+        "wires": []
+    },
+    {
+        "id": "ec531d12.0e8ca",
+        "type": "debug",
+        "z": "7709a213.3ceefc",
+        "name": "Raw",
+        "active": false,
+        "console": "false",
+        "complete": "true",
+        "x": 390,
+        "y": 60,
+        "wires": []
+    }
+]
